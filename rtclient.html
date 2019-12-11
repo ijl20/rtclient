@@ -40,7 +40,8 @@ var test_sirivm_journey = {};
 </script>
 
 <!-- RTMonitor and WebSockets library -->
-<script src="sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<!--script src="sockjs.min.js"></script>-->
 
 <script src="rtmonitor_api.js"></script>
 
@@ -51,7 +52,9 @@ var test_sirivm_journey = {};
 <script src="rtclient.js"></script>
 
 <script>
-    RTMONITOR_URI = 'http://localhost/test/rtmonitor/coffee/'
+    RTMONITOR_URI = 'http://localhost/rtmonitor/A/coffee/'
+
+    RT_TOKEN = 'y1AS/hH1FzyNCQnPzlSAJvEW5Rs4McIPOpJoPHIsfyy8UC3jCNRW+OYACx7yC6pBwFS9Yr9aBldSfmBNUrjtvB3w2GOLJYzTUzEJ0DTfWr1MD8AWsu1pD0MVyyAp5NjvwECKxLioBwrQ3vf7obhfH/Y0rLbHh/B3bIX31sTWiSfsnLxkOC0pPfCAcQWStpGiPYp4L57HQjp8+S6MBzd1I3ByxG0Y9I4WUEZqZd386ipl91HzKMY41Sv6kSt3QwcrCALZyM3H0CquJrZaqGIOPLIN7ylIhRm6FwqUThwRNnbpyx3WcCEeZqQPSwcFwyM+lFkud0eXsHu3IX2BiwaVkmosSs6pqCAOX/0BOuUlIHeBJf3RQGWzYfZ/xika/TMOk11GCNoFei+HM102Jt4ayQ=='
 </script>
 
 </head>
@@ -69,15 +72,9 @@ var test_sirivm_journey = {};
 
 
 
-<div class="control_heading">Real-time requests and subscriptions</div>
+<div class="control_heading">RTMonitor:</div>
 
 <input id="rtmonitor_uri"></input>
-
-<br>
-<h7>Data Vis</h7>
-
-<div id="dataVis"></div>
-<br>
 
 
 <div class="control_box">
@@ -160,12 +157,6 @@ var test_sirivm_journey = {};
 </div>
 
 </div> <!-- end of control_div -->
-
-<!-- progress -->
-<div id="progress_div" class="progress_div">
-</div>
-
-
 
 <!-- console log -->
 <div id="log_div"></div>

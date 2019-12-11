@@ -64,7 +64,7 @@ if ((typeof DEBUG !== 'undefined') && DEBUG.indexOf('rtmonitor_api_log') >= 0)
 {
     document.onkeydown = function(evt) {
         evt = evt || window.event;
-        log('keydown '+evt.keyCode);
+        //log('keydown '+evt.keyCode);
         if (evt.keyCode == 222) // '#' keycode
         {
             test_disconnect();

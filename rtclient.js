@@ -4,7 +4,7 @@
 // ***************************************************************************
 // Constants
 
-var VERSION = '6.00';
+var VERSION = '6.01';
             // 6.00 removed all bus stuff
             // 5.06 token support, set_uri added to RTMONITOR_API
             // 5.05 bugfix for TIMETABLE_URI
@@ -42,7 +42,7 @@ var DEBUG = '';
 // RTMonitor rt_connect client_data
 var CLIENT_DATA = { rt_client_name: 'RTClient V'+VERSION,
                     rt_client_id: 'rtclient',
-                    rt_token: 'foo'
+                    rt_token: '' // will update in init
                   };
 
 // *************************************************************
@@ -128,7 +128,7 @@ function init()
 {
     document.title = 'RTClient ' + VERSION;
     //initialise page_title
-    var page_title_text = document.createTextNode('JB vis tests '+VERSION);
+    var page_title_text = document.createTextNode('RT Client '+VERSION);
     var page_title = document.getElementById('page_title');
     // remove existing title if there is one
     while (page_title.firstChild) {
@@ -143,6 +143,8 @@ function init()
     var rtmonitor_uri_input = document.getElementById('rtmonitor_uri');
 
     rtmonitor_uri_input.value = RTMONITOR_URI;
+
+    CLIENT_DATA.rt_token = RT_TOKEN; // from rtclient.html
 
     rtmonitor_uri_input.addEventListener('focus', function (e) {
         rtmonitor_uri_input.style['background-color'] = '#ddffdd'; //lightgreen
@@ -185,7 +187,7 @@ function init()
 
     rt_mon = RTMONITOR_API.register(rtmonitor_connected,rtmonitor_disconnected);
 
-    rt_mon.connect();
+    //rt_mon.connect();
 
 } // end init()
 
