@@ -4,8 +4,9 @@
 // ***************************************************************************
 // Constants
 
-var VERSION = '6.01';
-            // 6.00 removed all bus stuff
+var VERSION = '6.02';
+            // 6.01 client/rtmonitor connecting on tfc-app2
+            // 6.00 rtclient - removed all bus stuff
             // 5.06 token support, set_uri added to RTMONITOR_API
             // 5.05 bugfix for TIMETABLE_URI
             // 5.04 updated to use rtmonitor_api 3.0 (register & connect methods)
@@ -172,7 +173,8 @@ function init()
         return false;
     });
 
-     update_clock(new Date());
+    update_clock(new Date());
+
     clock_timer = setInterval(function () { update_clock(new Date()); }, 1000);
 
     // initialize UI checkboxes
@@ -220,7 +222,8 @@ function handle_msg(msg, clock_time)
     }
 
     var sensor_id = msg[RECORD_INDEX];
-    console.log("Got message: "+JSON.stringify(msg["intensity"]));
+
+    console.log("Got message: "+JSON.stringify(msg));
 
     // If an existing entry in 'sensors' has this key, then update
     // otherwise create new entry.
@@ -239,7 +242,7 @@ function handle_msg(msg, clock_time)
 function init_sensor(msg, clock_time)
     {
         // new sensor, create marker
-        console.log(' ** New '+msg[RECORD_INDEX]);
+        console.log(" ** New sensor id:'"+msg[RECORD_INDEX]+"'");
 
         var sensor_id = msg[RECORD_INDEX];
 
@@ -247,9 +250,37 @@ function init_sensor(msg, clock_time)
                        msg: msg
                      };
 
+      // flag if this record is OLD or NEW
+        init_old_status(sensor, clock_time);
 
+        sensors[sensor_id] = sensor;
 
     }
+// We have received a new data message from an existing sensor, so analyze and update state
+function update_sensor(msg, clock_time)
+{
+		// existing sensor data record has arrived
+        //console.log('update_sensor '+clock_time);
+
+        var sensor_id = msg[RECORD_INDEX];
+
+		if (get_msg_date(msg).getTime() != get_msg_date(sensors[sensor_id].msg).getTime())
+        {
+
+            // store as latest msg
+            // moving current msg to prev_msg
+            sensors[sensor_id].prev_msg = sensors[sensor_id].msg;
+		    sensors[sensor_id].msg = msg; // update entry for this msg
+
+            var sensor = sensors[sensor_id];
+
+            console.log('Updating '+sensor.sensor_id);
+
+            // flag if this record is OLD or NEW
+            update_old_status(sensor, clock_time);
+
+		}
+}
 
 // update realtime clock on page
 // called via intervalTimer in init()
@@ -260,7 +291,54 @@ function update_clock(time)
     check_old_records(time);
 }
 
-// Give
+// Given a data record, update '.old' property t|f and reset marker icon
+// Note that 'current time' is the JS date value in global 'clock_time'
+// so that this function works equally well during replay of old data.
+//
+function init_old_status(sensor, clock_time)
+{
+    sensor.old = false; // start with the assumption msg is not old, update will correct if needed
+    update_old_status(sensor, clock_time);
+}
+
+function update_old_status(sensor, clock_time)
+{
+    var data_timestamp = get_msg_date(sensor.msg); // will hold Date from sensor
+
+    // calculate age of sensor (in seconds)
+    var age = (clock_time - data_timestamp) / 1000;
+
+    if (age > OLD_DATA_RECORD)
+    {
+        // data record is OLD
+        // skip if this data record is already flagged as old
+        if (sensor.old != null && sensor.old)
+        {
+            return;
+        }
+        // set the 'old' flag on this record and update icon
+        sensor.old = true;
+        console.log("Sensor "+sensor.sensor_id+" is now old")
+    }
+    else
+    {
+        //console.log('update_old_status NOT OLD '+sensor.sensor_id);
+        //var clock_time_str = hh_mm_ss(clock_time);
+        //var msg_time_str = hh_mm_ss(data_timestamp);
+        //console.log(clock_time_str+' vs '+msg_time_str+' data record is NOT OLD '+sensor.sensor_id);
+
+        // skip if this data record is already NOT OLD
+        if (sensor.old != null && !sensor.old)
+        {
+            return;
+        }
+        // reset the 'old' flag on this data record and update icon
+        sensor.old = false;
+        console.log("Sensor "+sensor.sensor_id+" not old any more")
+
+    }
+}
+
 // watchdog function to flag 'old' data records
 // records are stored in 'sensors' object
 function check_old_records(clock_time)
@@ -340,11 +418,13 @@ function rt_disconnect()
 function rtmonitor_disconnected()
 {
     console.log('** rtmonitor connection closed **');
+    document.getElementById('connect_box').className = 'not_connected';
 }
 
 function rtmonitor_connected()
 {
     console.log('** rtmonitor connected **');
+    document.getElementById('connect_box').className = 'connected';
 }
 
 function rt_send_input(input_name)

@@ -34,11 +34,6 @@ RELEASE INFO:
 
 <link rel="stylesheet" href="rtclient.css" />
 
-<!-- Create object to store test data from following files -->
-<script type="text/javascript">
-var test_sirivm_journey = {};
-</script>
-
 <!-- RTMonitor and WebSockets library -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <!--script src="sockjs.min.js"></script>-->
@@ -52,7 +47,7 @@ var test_sirivm_journey = {};
 <script src="rtclient.js"></script>
 
 <script>
-    RTMONITOR_URI = 'http://localhost/rtmonitor/A/coffee/'
+    RTMONITOR_URI = 'https://tfc-app2.cl.cam.ac.uk/rtmonitor/A/general/'
 
     RT_TOKEN = 'y1AS/hH1FzyNCQnPzlSAJvEW5Rs4McIPOpJoPHIsfyy8UC3jCNRW+OYACx7yC6pBwFS9Yr9aBldSfmBNUrjtvB3w2GOLJYzTUzEJ0DTfWr1MD8AWsu1pD0MVyyAp5NjvwECKxLioBwrQ3vf7obhfH/Y0rLbHh/B3bIX31sTWiSfsnLxkOC0pPfCAcQWStpGiPYp4L57HQjp8+S6MBzd1I3ByxG0Y9I4WUEZqZd386ipl91HzKMY41Sv6kSt3QwcrCALZyM3H0CquJrZaqGIOPLIN7ylIhRm6FwqUThwRNnbpyx3WcCEeZqQPSwcFwyM+lFkud0eXsHu3IX2BiwaVkmosSs6pqCAOX/0BOuUlIHeBJf3RQGWzYfZ/xika/TMOk11GCNoFei+HM102Jt4ayQ=='
 </script>
@@ -72,24 +67,25 @@ var test_sirivm_journey = {};
 
 
 
-<div class="control_heading">RTMonitor:</div>
-
-<input id="rtmonitor_uri"></input>
-
-
 <div class="control_box">
-    <form>
-        <input type="text" id="rtmonitor_uri"></input>
-    </form>
+    <div id="connect_box" class="not_connected">
+        <div class="control_heading">RTMonitor:</div>
+
+        <form class="uri_input">
+            <input type="text" id="rtmonitor_uri"></input>
+        </form>
+
+        <button onclick="rt_connect('nginx')"
+            title="Connect socket to server and send rt_connect msg"
+            >Connect</button>
+        <button onclick="rt_disconnect()"
+            title="Close socket connection to server"
+            >Close</button>
+    </div>
+
     <button onclick="page_reset()"
         title="Reset this page"
         >Reset</button>
-    <button onclick="rt_connect('nginx')"
-        title="Connect socket to server and send rt_connect msg"
-        >Connect</button>
-    <button onclick="rt_disconnect()"
-        title="Close socket connection to server"
-        >Close</button>
     <!--<button onclick="request_latest_msg()"
         title="Get the latest eventbus message from the server"
         >Request msg</button> -->
