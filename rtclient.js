@@ -214,6 +214,12 @@ function handle_records(websock_data)
 // process a single data record
 function handle_msg(msg, clock_time)
 {
+    // display record on page
+    var log_record = document.createElement("DIV");
+    var log_content = document.createTextNode(JSON.stringify(msg));
+    log_record.appendChild(log_content);
+    log_div.insertBefore(log_record,log_div.firstChild);
+
     // add to recorded_data if recording is on
 
     if (recording_on)
